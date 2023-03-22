@@ -26,7 +26,16 @@ exports.getGroupMembers = async (req, res) => {
 // TODO #1.1: Get items from DynamoDB
 exports.getItems = async (req, res) => {
   // You should change the response below.
-  res.send("This route should get all items in DynamoDB.");
+  const params = {
+    TableName: process.env.aws_items_table_name,
+  };
+  try {
+    const data = await docClient.send(new ScanCommand(params));
+    res.send(data.Items);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(err);
+  }
 };
 
 // TODO #1.2: Add an item to DynamoDB
